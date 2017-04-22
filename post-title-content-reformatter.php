@@ -28,10 +28,10 @@ class Post_formatter
 	public function __construct()
 	{
 		// hook to post title
-		add_filter( 'the_title', [ &$this, 'format' ] );
+		add_filter( 'the_title', [ &$this, 'format' ], 200 );
 
 		// hook to post content
-		add_filter( 'the_content', [ &$this, 'format' ] );
+		add_filter( 'the_content', [ &$this, 'format' ], 1 );
 	}
 
 	/**
@@ -59,20 +59,23 @@ class Post_formatter
 	 */
 	public function format( $content )
 	{
-		// remove spaces form beginning
-		$content = trim( $content );
+		// remove p tag
+		$content = wp_strip_all_tags( $content );
 
 		// remove . from beginning
 		$content = ltrim( $content, '.' );
 
+		// remove spaces form beginning
+		$content = trim( $content );
+
+		// remove double spaces
+		$content = preg_replace( '/[\p{Z}\s]{2,}/u', ' ', $content );
+
 		// remove double dots
 		$content = preg_replace( '/\.+/', '.', $content );
 
-		// remove double spaces
-		$content = preg_replace( '/\s+/', ' ', $content );
-
 		// make everything lowercase, and then make the first letter if the entire string capitalized
-		$content = ucfirst( strtolower( $content ) );
+		$content = ucfirst( $content );
 
 		// capitalize every letter after .
 		$content = preg_replace_callback(
@@ -82,7 +85,7 @@ class Post_formatter
 		}, $content
 		);
 
-		return $content;
+		return "<p>{$content}</p>";
 	}
 
 }
