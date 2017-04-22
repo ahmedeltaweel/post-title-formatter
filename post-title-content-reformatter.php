@@ -1,5 +1,5 @@
 <?php
-/**
+/*
  * Plugin Name: Post Title formatter.
  * Description: WordPress Plugin that remove double spaces and full stops also Capitalize letter at the beginning of the sentence.
  * Version:     1.0.0
@@ -88,4 +88,4 @@ class Post_formatter
 }
 
 // boot system
-new Post_formatter();
+Post_formatter::get_instance();
